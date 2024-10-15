@@ -180,10 +180,11 @@ const App: React.FC = () => {
           variant="h4"
           gutterBottom
           color="#FFF"
-          sx={{ display: "flex", alignItems: "center" }}
+          sx={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
         >
           Cuenta Ágape
           <img
+            style={{ marginLeft: "5px" }}
             alt="agapeLogo"
             src={`${process.env.PUBLIC_URL}/agape.png`}
             width="52"
@@ -363,7 +364,7 @@ const App: React.FC = () => {
         </TableContainer>
 
         <Typography
-          variant="h6"
+          variant="h4"
           gutterBottom
           color="#FFF"
           sx={{ marginTop: 3 }}
@@ -373,7 +374,7 @@ const App: React.FC = () => {
 
         <Button
           variant="contained"
-          color="secondary"
+          color="warning"
           onClick={handleClearEntries}
           fullWidth
           sx={{ marginTop: 2, marginBottom: 2 }}
@@ -381,6 +382,19 @@ const App: React.FC = () => {
           Limpiar Todo
         </Button>
       </Container>
+      <Typography
+        gutterBottom
+        color="#FFF"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-around",
+          fontSize: "12px",
+        }}
+      >
+        <p>Copyright &copy; Giordano Bruno Nº 38 </p>
+        <p> Powered by Alejandro Tartaglia M∴M∴</p>
+      </Typography>
     </ThemeProvider>
   );
 };
