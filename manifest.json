@@ -1,5 +1,5 @@
 {
-  "short_name": "React App",
+  "short_name": "cuenta-agape",
   "name": "Create React App Sample",
   "icons": [
     {
@@ -13,7 +13,7 @@
       "sizes": "192x192"
     },
     {
-      "src": "%PUBLIC_URL%/agape512.png",
+      "src": "%PUBLIC_URL%/agape.png",
       "type": "image/png",
       "sizes": "512x512"
     }
