@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
     const total = importeMenu + importeBebida + importePostre;
     const totalConDescuento =
-      formData.metodoPago === "Efectivo" ? total * 0.9 : total;
+      formData.metodoPago === "Efectivo" ? total * 0.85 : total;
 
     const nuevaEntrada: Entrada = {
       nombre: formData.nombre,
@@ -182,7 +182,7 @@ const App: React.FC = () => {
           color="#FFF"
           sx={{ display: "flex", alignItems: "center" }}
         >
-          Cena Ágape
+          Cuenta Ágape
           <img
             alt="agapeLogo"
             src={`${process.env.PUBLIC_URL}/agape.png`}
@@ -194,7 +194,7 @@ const App: React.FC = () => {
           <TextField
             id="nombre"
             name="nombre"
-            label="Nombre"
+            label="Nombre HH"
             value={formData.nombre}
             onChange={handleInputChange}
             fullWidth
@@ -287,7 +287,7 @@ const App: React.FC = () => {
             margin="normal"
             sx={{ color: "#FFF" }}
           >
-            <MenuItem value="Efectivo">Efectivo</MenuItem>
+            <MenuItem value="Efectivo">Efectivo (15% descuento)</MenuItem>
             <MenuItem value="Tarjeta">Tarjeta</MenuItem>
             <MenuItem value="Otro">Otro</MenuItem>
           </TextField>
@@ -321,8 +321,11 @@ const App: React.FC = () => {
               <TableRow>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Menú</TableCell>
+                <TableCell>Importe Menú</TableCell> {/* Nueva columna */}
                 <TableCell>Bebida</TableCell>
+                <TableCell>Importe Bebida</TableCell> {/* Nueva columna */}
                 <TableCell>Postre</TableCell>
+                <TableCell>Importe Postre</TableCell> {/* Nueva columna */}
                 <TableCell>Método de Pago</TableCell>
                 <TableCell>Total</TableCell>
                 <TableCell>Estado</TableCell>
@@ -334,8 +337,14 @@ const App: React.FC = () => {
                 <TableRow key={index}>
                   <TableCell>{entrada.nombre}</TableCell>
                   <TableCell>{entrada.menu}</TableCell>
+                  <TableCell>{entrada.importeMenu.toFixed(2)}</TableCell>{" "}
+                  {/* Mostrar importe menú */}
                   <TableCell>{entrada.bebida}</TableCell>
+                  <TableCell>{entrada.importeBebida.toFixed(2)}</TableCell>{" "}
+                  {/* Mostrar importe bebida */}
                   <TableCell>{entrada.postre}</TableCell>
+                  <TableCell>{entrada.importePostre.toFixed(2)}</TableCell>{" "}
+                  {/* Mostrar importe postre */}
                   <TableCell>{entrada.metodoPago}</TableCell>
                   <TableCell>{entrada.total.toFixed(2)}</TableCell>
                   <TableCell>{entrada.estado}</TableCell>
