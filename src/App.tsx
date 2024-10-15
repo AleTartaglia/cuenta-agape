@@ -30,6 +30,7 @@ interface Entrada {
   importePostre: number;
   metodoPago: string;
   total: number;
+  estado: string;
 }
 
 const App: React.FC = () => {
@@ -42,7 +43,8 @@ const App: React.FC = () => {
     importeBebida: 0,
     postre: "",
     importePostre: 0,
-    metodoPago: "Otro",
+    metodoPago: "",
+    estado: "",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [totalMesa, setTotalMesa] = useState<number>(0);
@@ -73,6 +75,7 @@ const App: React.FC = () => {
       importePostre: importePostre,
       metodoPago: formData.metodoPago,
       total: totalConDescuento,
+      estado: formData.estado,
     };
 
     const nuevasEntradas = [...entradas];
@@ -96,7 +99,8 @@ const App: React.FC = () => {
       importeBebida: 0,
       postre: "",
       importePostre: 0,
-      metodoPago: "Otro",
+      metodoPago: "",
+      estado: "",
     });
   };
 
@@ -120,6 +124,7 @@ const App: React.FC = () => {
       postre: entrada.postre,
       importePostre: entrada.importePostre,
       metodoPago: entrada.metodoPago,
+      estado: entrada.estado,
     });
     setEditIndex(index);
   };
@@ -286,6 +291,20 @@ const App: React.FC = () => {
             <MenuItem value="Tarjeta">Tarjeta</MenuItem>
             <MenuItem value="Otro">Otro</MenuItem>
           </TextField>
+          <TextField
+            id="estado"
+            name="estado"
+            label="Estado"
+            select
+            value={formData.estado}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            sx={{ color: "#FFF" }}
+          >
+            <MenuItem value="Abono">Abono</MenuItem>
+            <MenuItem value="No Abono">No Abono</MenuItem>
+          </TextField>
           <Button
             variant="contained"
             color="primary"
@@ -306,6 +325,7 @@ const App: React.FC = () => {
                 <TableCell>Postre</TableCell>
                 <TableCell>Método de Pago</TableCell>
                 <TableCell>Total</TableCell>
+                <TableCell>Estado</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -318,6 +338,7 @@ const App: React.FC = () => {
                   <TableCell>{entrada.postre}</TableCell>
                   <TableCell>{entrada.metodoPago}</TableCell>
                   <TableCell>{entrada.total.toFixed(2)}</TableCell>
+                  <TableCell>{entrada.estado}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditEntry(index)}>
                       <EditIcon />
