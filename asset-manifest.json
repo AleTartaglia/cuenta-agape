@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/cuenta-agape/static/css/main.e6c13ad2.css",
-    "main.js": "/cuenta-agape/static/js/main.92ebaee9.js",
+    "main.js": "/cuenta-agape/static/js/main.dd83a88c.js",
     "service-worker.js": "/cuenta-agape/service-worker.js",
     "index.html": "/cuenta-agape/index.html",
     "main.e6c13ad2.css.map": "/cuenta-agape/static/css/main.e6c13ad2.css.map",
-    "main.92ebaee9.js.map": "/cuenta-agape/static/js/main.92ebaee9.js.map"
+    "main.dd83a88c.js.map": "/cuenta-agape/static/js/main.dd83a88c.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.92ebaee9.js"
+    "static/js/main.dd83a88c.js"
   ]
 }
