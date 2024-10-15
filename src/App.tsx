@@ -178,7 +178,11 @@ const App: React.FC = () => {
           sx={{ display: "flex", alignItems: "center" }}
         >
           Cena Ágape
-          <img alt="agapeLogo" src="../public/agape.png" width="52" />
+          <img
+            alt="agapeLogo"
+            src={`${process.env.PUBLIC_URL}/agape.png`}
+            width="52"
+          />
         </Typography>
 
         <form noValidate autoComplete="off">
