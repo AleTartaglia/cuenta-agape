@@ -8,17 +8,17 @@
       "type": "image/x-icon"
     },
     {
-      "src": "agape192.png",
+      "src": "%PUBLIC_URL%/agape.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "agape512.png",
+      "src": "%PUBLIC_URL%/agape512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "%PUBLIC_URL%/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
