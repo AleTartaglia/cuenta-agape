@@ -176,21 +176,35 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Container>
-        <Typography
-          variant="h4"
-          gutterBottom
-          color="#FFF"
-          sx={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "10px",
+          }}
         >
-          Cuenta Ágape
+          <Typography
+            variant="h4"
+            gutterBottom
+            color="#FFF"
+            sx={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
+          >
+            Cuenta Ágape
+            <img
+              style={{ marginLeft: "5px" }}
+              alt="agapeLogo"
+              src={`${process.env.PUBLIC_URL}/agape.png`}
+              width="52"
+            />
+          </Typography>
           <img
             style={{ marginLeft: "5px" }}
-            alt="agapeLogo"
-            src={`${process.env.PUBLIC_URL}/agape.png`}
-            width="52"
+            alt="gb38"
+            src={`${process.env.PUBLIC_URL}/gb38.png`}
+            width="104px"
           />
-        </Typography>
-
+        </div>
         <form noValidate autoComplete="off">
           <TextField
             id="nombre"
@@ -322,12 +336,12 @@ const App: React.FC = () => {
               <TableRow>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Menú</TableCell>
-                <TableCell>Importe Menú</TableCell> {/* Nueva columna */}
+                <TableCell>Importe Menú</TableCell>
                 <TableCell>Bebida</TableCell>
-                <TableCell>Importe Bebida</TableCell> {/* Nueva columna */}
+                <TableCell>Importe Bebida</TableCell>
                 <TableCell>Postre</TableCell>
-                <TableCell>Importe Postre</TableCell> {/* Nueva columna */}
-                <TableCell>Método de Pago</TableCell>
+                <TableCell>Importe Postre</TableCell>
+                <TableCell>Método Pago</TableCell>
                 <TableCell>Total</TableCell>
                 <TableCell>Estado</TableCell>
                 <TableCell>Acciones</TableCell>
@@ -338,16 +352,19 @@ const App: React.FC = () => {
                 <TableRow key={index}>
                   <TableCell>{entrada.nombre}</TableCell>
                   <TableCell>{entrada.menu}</TableCell>
-                  <TableCell>{entrada.importeMenu.toFixed(2)}</TableCell>{" "}
-                  {/* Mostrar importe menú */}
+                  <TableCell>
+                    {Number(entrada.importeMenu).toFixed(2)}
+                  </TableCell>
                   <TableCell>{entrada.bebida}</TableCell>
-                  <TableCell>{entrada.importeBebida.toFixed(2)}</TableCell>{" "}
-                  {/* Mostrar importe bebida */}
+                  <TableCell>
+                    {Number(entrada.importeBebida).toFixed(2)}
+                  </TableCell>
                   <TableCell>{entrada.postre}</TableCell>
-                  <TableCell>{entrada.importePostre.toFixed(2)}</TableCell>{" "}
-                  {/* Mostrar importe postre */}
+                  <TableCell>
+                    {Number(entrada.importePostre).toFixed(2)}
+                  </TableCell>
                   <TableCell>{entrada.metodoPago}</TableCell>
-                  <TableCell>{entrada.total.toFixed(2)}</TableCell>
+                  <TableCell>{Number(entrada.total).toFixed(2)}</TableCell>
                   <TableCell>{entrada.estado}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditEntry(index)}>
@@ -362,7 +379,6 @@ const App: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
         <Typography
           variant="h4"
           gutterBottom
@@ -371,7 +387,6 @@ const App: React.FC = () => {
         >
           Total de la mesa: ${totalMesa.toFixed(2)}
         </Typography>
-
         <Button
           variant="contained"
           color="warning"
@@ -390,10 +405,14 @@ const App: React.FC = () => {
           alignItems: "center",
           justifyContent: "space-around",
           fontSize: "12px",
+          flexDirection: "column",
+          Direction: "column",
         }}
       >
-        <p>Copyright &copy; Giordano Bruno Nº 38 </p>
-        <p> Powered by Alejandro Tartaglia M∴M∴</p>
+        <span>Copyright &copy; Giordano Bruno Nº 38 </span>
+        <span style={{ fontSize: "9px" }}>
+          powered by Alejandro Tartaglia M∴M∴
+        </span>
       </Typography>
     </ThemeProvider>
   );
