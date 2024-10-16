@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  Button,
-  MenuItem,
-  Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Button, Container, Typography } from "@mui/material";
+
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import localforage from "localforage";
+import AgapeHeader from "./components/AgapeHeader";
+import AgapeForm from "./components/AgapeForm";
+import AgapeTable from "./components/AgapeTable";
+import AgapeFooter from "./components/AgapeFooter";
 
 // Definir estructura de una entrada
-interface Entrada {
+export interface Entrada {
   nombre: string;
   menu: string;
   importeMenu: number;
@@ -33,99 +22,106 @@ interface Entrada {
   estado: string;
 }
 
-const App: React.FC = () => {
+const defaultFormData = {
+  nombre: "",
+  menu: "",
+  importeMenu: 0,
+  bebida: "",
+  importeBebida: 0,
+  postre: "",
+  importePostre: 0,
+  metodoPago: "",
+  total: 0,
+  estado: "",
+};
+
+const App = () => {
   const [entradas, setEntradas] = useState<Entrada[]>([]);
-  const [formData, setFormData] = useState({
-    nombre: "",
-    menu: "",
-    importeMenu: 0,
-    bebida: "",
-    importeBebida: 0,
-    postre: "",
-    importePostre: 0,
-    metodoPago: "",
-    estado: "",
-  });
+  const [formData, setFormData] = useState<Entrada>(defaultFormData);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [totalMesa, setTotalMesa] = useState<number>(0);
+  const [errors, setErrors] = useState<{
+    nombre?: string;
+    metodoPago?: string;
+  }>({});
 
   // Función para actualizar el estado del formulario
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    // Limpiar el error del campo correspondiente si se está escribiendo
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: undefined, // Elimina el error si el campo se está editando
+    }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name.includes("importe") ? Number(value) : value,
+    }));
   };
 
   // Función para añadir o editar una entrada en la tabla
   const handleAddOrEditEntry = () => {
-    const importeMenu = +formData.importeMenu || 0;
-    const importeBebida = +formData.importeBebida || 0;
-    const importePostre = +formData.importePostre || 0;
+    // Resetear errores antes de validar
+    setErrors({});
 
-    const total = importeMenu + importeBebida + importePostre;
+    const total =
+      formData.importeMenu + formData.importeBebida + formData.importePostre;
     const totalConDescuento =
       formData.metodoPago === "Efectivo" ? total * 0.85 : total;
 
-    const nuevaEntrada: Entrada = {
-      nombre: formData.nombre,
-      menu: formData.menu,
-      importeMenu: importeMenu,
-      bebida: formData.bebida,
-      importeBebida: importeBebida,
-      postre: formData.postre,
-      importePostre: importePostre,
-      metodoPago: formData.metodoPago,
-      total: totalConDescuento,
-      estado: formData.estado,
-    };
-
-    const nuevasEntradas = [...entradas];
-    if (editIndex !== null) {
-      nuevasEntradas[editIndex] = nuevaEntrada;
-      setEditIndex(null);
-    } else {
-      nuevasEntradas.push(nuevaEntrada);
+    // Validaciones
+    let newErrors: { nombre?: string; metodoPago?: string } = {};
+    if (!formData.nombre) {
+      newErrors.nombre = "El nombre es requerido.";
+    }
+    if (!formData.metodoPago) {
+      newErrors.metodoPago = "El método de pago es requerido.";
     }
 
-    setEntradas(nuevasEntradas);
-    localforage.setItem("entradas", nuevasEntradas).catch(console.error); // Manejar errores
-    calcularTotalMesa(nuevasEntradas);
+    // Si hay errores, actualizar el estado y salir
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const nuevaEntrada: Entrada = {
+      ...formData,
+      total: totalConDescuento,
+    };
+
+    setEntradas((prev) => {
+      const nuevasEntradas =
+        editIndex !== null
+          ? prev.map((item, idx) => (idx === editIndex ? nuevaEntrada : item))
+          : [...prev, nuevaEntrada];
+      calcularTotalMesa(nuevasEntradas);
+      localforage.setItem("entradas", nuevasEntradas).catch(console.error);
+      return nuevasEntradas;
+    });
 
     // Limpiar los campos del formulario
-    setFormData({
-      nombre: "",
-      menu: "",
-      importeMenu: 0,
-      bebida: "",
-      importeBebida: 0,
-      postre: "",
-      importePostre: 0,
-      metodoPago: "",
-      estado: "",
-    });
+    setFormData(defaultFormData);
+    setEditIndex(null);
   };
 
   // Función para eliminar una entrada
   const handleDeleteEntry = (index: number) => {
-    const nuevasEntradas = entradas.filter((_, i) => i !== index);
-    setEntradas(nuevasEntradas);
-    localforage.setItem("entradas", nuevasEntradas).catch(console.error);
-    calcularTotalMesa(nuevasEntradas);
+    setEntradas((prev) => {
+      const nuevasEntradas = prev.filter((_, i) => i !== index);
+      localforage.setItem("entradas", nuevasEntradas).catch(console.error);
+      calcularTotalMesa(nuevasEntradas);
+      return nuevasEntradas;
+    });
   };
 
   // Función para editar una entrada
   const handleEditEntry = (index: number) => {
     const entrada = entradas[index];
-    setFormData({
-      nombre: entrada.nombre,
-      menu: entrada.menu,
-      importeMenu: entrada.importeMenu,
-      bebida: entrada.bebida,
-      importeBebida: entrada.importeBebida,
-      postre: entrada.postre,
-      importePostre: entrada.importePostre,
-      metodoPago: entrada.metodoPago,
-      estado: entrada.estado,
-    });
+    setFormData(entrada);
     setEditIndex(index);
   };
 
@@ -152,7 +148,7 @@ const App: React.FC = () => {
           calcularTotalMesa(savedEntries);
         }
       })
-      .catch(console.error); // Manejar errores de carga
+      .catch(console.error);
 
     // Aplicar el color de fondo oscuro al body
     document.body.style.backgroundColor = "#171F24";
@@ -176,209 +172,19 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Container>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "10px",
-          }}
-        >
-          <Typography
-            variant="h4"
-            gutterBottom
-            color="#FFF"
-            sx={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
-          >
-            Cuenta Ágape
-            <img
-              style={{ marginLeft: "5px" }}
-              alt="agapeLogo"
-              src={`${process.env.PUBLIC_URL}/agape.png`}
-              width="52"
-            />
-          </Typography>
-          <img
-            style={{ marginLeft: "5px" }}
-            alt="gb38"
-            src={`${process.env.PUBLIC_URL}/gb38.png`}
-            width="104px"
-          />
-        </div>
-        <form noValidate autoComplete="off">
-          <TextField
-            id="nombre"
-            name="nombre"
-            label="Nombre HH"
-            value={formData.nombre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            id="menu"
-            name="menu"
-            label="Menú"
-            value={formData.menu}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            id="importeMenu"
-            name="importeMenu"
-            label="Importe Menú"
-            type="number"
-            value={formData.importeMenu}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            name="bebida"
-            id="bebida"
-            label="Bebida"
-            select
-            value={formData.bebida}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          >
-            <MenuItem value="Agua">Agua</MenuItem>
-            <MenuItem value="Gaseosa">Gaseosa</MenuItem>
-            <MenuItem value="Vino">Vino</MenuItem>
-          </TextField>
-
-          <TextField
-            id="importeBebida"
-            name="importeBebida"
-            label="Importe Bebida"
-            type="number"
-            value={formData.importeBebida}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            id="postre"
-            name="postre"
-            label="Postre"
-            value={formData.postre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            id="importePostre"
-            name="importePostre"
-            label="Importe Postre"
-            type="number"
-            value={formData.importePostre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          />
-
-          <TextField
-            id="metodoPago"
-            name="metodoPago"
-            label="Método de Pago"
-            select
-            value={formData.metodoPago}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          >
-            <MenuItem value="Efectivo">Efectivo (15% descuento)</MenuItem>
-            <MenuItem value="Tarjeta">Tarjeta</MenuItem>
-            <MenuItem value="Otro">Otro</MenuItem>
-          </TextField>
-          <TextField
-            id="estado"
-            name="estado"
-            label="Estado"
-            select
-            value={formData.estado}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            sx={{ color: "#FFF" }}
-          >
-            <MenuItem value="Abono">Abono</MenuItem>
-            <MenuItem value="No Abono">No Abono</MenuItem>
-          </TextField>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddOrEditEntry}
-            fullWidth
-          >
-            {editIndex !== null ? "Guardar Cambios" : "Añadir"}
-          </Button>
-        </form>
-
-        <TableContainer component={Paper} sx={{ marginTop: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Menú</TableCell>
-                <TableCell>Importe Menú</TableCell>
-                <TableCell>Bebida</TableCell>
-                <TableCell>Importe Bebida</TableCell>
-                <TableCell>Postre</TableCell>
-                <TableCell>Importe Postre</TableCell>
-                <TableCell>Método Pago</TableCell>
-                <TableCell>Total</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {entradas.map((entrada, index) => (
-                <TableRow key={index}>
-                  <TableCell>{entrada.nombre}</TableCell>
-                  <TableCell>{entrada.menu}</TableCell>
-                  <TableCell>
-                    {Number(entrada.importeMenu).toFixed(2)}
-                  </TableCell>
-                  <TableCell>{entrada.bebida}</TableCell>
-                  <TableCell>
-                    {Number(entrada.importeBebida).toFixed(2)}
-                  </TableCell>
-                  <TableCell>{entrada.postre}</TableCell>
-                  <TableCell>
-                    {Number(entrada.importePostre).toFixed(2)}
-                  </TableCell>
-                  <TableCell>{entrada.metodoPago}</TableCell>
-                  <TableCell>{Number(entrada.total).toFixed(2)}</TableCell>
-                  <TableCell>{entrada.estado}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEditEntry(index)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteEntry(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <AgapeHeader />
+        <AgapeForm
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleAddOrEditEntry={handleAddOrEditEntry}
+          editIndex={editIndex}
+          errors={errors}
+        />
+        <AgapeTable
+          entradas={entradas}
+          handleEditEntry={handleEditEntry}
+          handleDeleteEntry={handleDeleteEntry}
+        />
         <Typography
           variant="h4"
           gutterBottom
@@ -389,31 +195,19 @@ const App: React.FC = () => {
         </Typography>
         <Button
           variant="contained"
-          color="warning"
           onClick={handleClearEntries}
           fullWidth
-          sx={{ marginTop: 2, marginBottom: 2 }}
+          sx={{
+            marginTop: 2,
+            marginBottom: 2,
+            fontWeight: "bold",
+            backgroundColor: "crimson",
+          }}
         >
           Limpiar Todo
         </Button>
       </Container>
-      <Typography
-        gutterBottom
-        color="#FFF"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-around",
-          fontSize: "12px",
-          flexDirection: "column",
-          Direction: "column",
-        }}
-      >
-        <span>Copyright &copy; Giordano Bruno Nº 38 </span>
-        <span style={{ fontSize: "9px" }}>
-          powered by Alejandro Tartaglia M∴M∴
-        </span>
-      </Typography>
+      <AgapeFooter />
     </ThemeProvider>
   );
 };
