@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, CssBaseline, Typography } from "@mui/material";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import localforage from "localforage";
@@ -51,15 +51,23 @@ const App = () => {
   ) => {
     const { name, value } = e.target;
 
-    // Limpiar el error del campo correspondiente si se está escribiendo
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: undefined, // Elimina el error si el campo se está editando
-    }));
+    // Convertir el valor a número si es un campo de importe
+    const numericValue =
+      name.includes("importe") || name === "propina" ? Number(value) : value;
 
+    // Validar que los importes y la propina no sean negativos
+    if (
+      (name.includes("importe") || name === "propina") &&
+      typeof numericValue === "number" &&
+      numericValue < 0
+    ) {
+      return; // No actualizamos el estado si el valor es negativo
+    }
+
+    // Actualizar el estado del formulario
     setFormData((prev) => ({
       ...prev,
-      [name]: name.includes("importe") ? Number(value) : value,
+      [name]: numericValue,
     }));
   };
 
@@ -151,7 +159,7 @@ const App = () => {
       .catch(console.error);
 
     // Aplicar el color de fondo oscuro al body
-    document.body.style.backgroundColor = "#171F24";
+    document.body.style.backgroundColor = "#1e272e";
   }, []);
 
   // Tema oscuro por defecto
@@ -185,13 +193,20 @@ const App = () => {
           handleEditEntry={handleEditEntry}
           handleDeleteEntry={handleDeleteEntry}
         />
+
         <Typography
           variant="h4"
           gutterBottom
           color="#FFF"
-          sx={{ marginTop: 3 }}
+          sx={{ marginTop: 3, display: "flex", alignItems: "center" }}
         >
-          Total de la mesa: ${totalMesa.toFixed(2)}
+          <img
+            style={{ marginRight: "5px" }}
+            alt="agapeLogo"
+            src={`${process.env.PUBLIC_URL}/agape.png`}
+            width="54"
+          />
+          Total de la Mesa: ${totalMesa.toFixed(2)}
         </Typography>
         <Button
           variant="contained"

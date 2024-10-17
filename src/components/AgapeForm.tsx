@@ -1,11 +1,6 @@
 import { Button, MenuItem, TextField } from "@mui/material";
 import { Entrada } from "../App";
 
-// Función para capitalizar la primera letra de cada palabra
-const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 interface AgapeFormProps {
   formData: Entrada;
   handleInputChange: (
@@ -26,52 +21,53 @@ const AgapeForm = ({
   return (
     <form noValidate autoComplete="off">
       <TextField
-        key="nombre"
+        error={!!errors.nombre} // Indica si hay un error
+        fullWidth
+        helperText={errors.nombre} // Muestra el mensaje de error
         id="nombre"
+        key="nombre"
+        label="Nombre H∴H∴"
+        margin="normal"
         name="nombre"
-        label="Nombre"
+        onChange={handleInputChange}
+        sx={{ color: "#FFF" }}
         type="text"
         value={formData.nombre}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        error={!!errors.nombre} // Indica si hay un error
-        helperText={errors.nombre} // Muestra el mensaje de error
       />
 
       <TextField
+        fullWidth
         id="menu"
-        name="menu"
         label="Menú"
-        value={formData.menu}
-        onChange={handleInputChange}
-        fullWidth
         margin="normal"
+        name="menu"
+        onChange={handleInputChange}
         sx={{ color: "#FFF" }}
+        value={formData.menu}
       />
 
       <TextField
+        fullWidth
         id="importeMenu"
-        name="importeMenu"
         label="Importe Menú"
+        margin="normal"
+        name="importeMenu"
+        onChange={handleInputChange}
+        sx={{ color: "#FFF" }}
         type="number"
         value={formData.importeMenu}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        sx={{ color: "#FFF" }}
       />
 
       <TextField
-        name="bebida"
+        fullWidth
         id="bebida"
         label="Bebida"
-        select
-        value={formData.bebida}
-        onChange={handleInputChange}
-        fullWidth
         margin="normal"
+        name="bebida"
+        onChange={handleInputChange}
+        select
         sx={{ color: "#FFF" }}
+        value={formData.bebida}
       >
         <MenuItem value="Agua">Agua</MenuItem>
         <MenuItem value="Gaseosa">Gaseosa</MenuItem>
@@ -79,77 +75,79 @@ const AgapeForm = ({
       </TextField>
 
       <TextField
+        fullWidth
         id="importeBebida"
-        name="importeBebida"
         label="Importe Bebida"
+        margin="normal"
+        name="importeBebida"
+        onChange={handleInputChange}
+        sx={{ color: "#FFF" }}
         type="number"
         value={formData.importeBebida}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        sx={{ color: "#FFF" }}
       />
 
       <TextField
+        fullWidth
         id="postre"
-        name="postre"
         label="Postre"
-        value={formData.postre}
-        onChange={handleInputChange}
-        fullWidth
         margin="normal"
+        name="postre"
+        onChange={handleInputChange}
         sx={{ color: "#FFF" }}
+        value={formData.postre}
       />
 
       <TextField
+        fullWidth
         id="importePostre"
-        name="importePostre"
         label="Importe Postre"
+        margin="normal"
+        name="importePostre"
+        onChange={handleInputChange}
+        sx={{ color: "#FFF" }}
         type="number"
         value={formData.importePostre}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        sx={{ color: "#FFF" }}
       />
 
       <TextField
-        key="metodoPago"
+        error={!!errors.metodoPago} // Indica si hay un error
+        fullWidth
+        helperText={errors.metodoPago} // Muestra el mensaje de error
         id="metodoPago"
-        name="metodoPago"
+        key="metodoPago"
         label="Método de Pago"
+        margin="normal"
+        name="metodoPago"
+        onChange={handleInputChange}
+        select
+        sx={{ color: "#FFF", fontWeight: "bold" }}
         type="text"
         value={formData.metodoPago}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        select
-        error={!!errors.metodoPago} // Indica si hay un error
-        helperText={errors.metodoPago} // Muestra el mensaje de error
       >
         <MenuItem value="Efectivo">Efectivo (15% descuento)</MenuItem>
         <MenuItem value="Tarjeta">Tarjeta</MenuItem>
         <MenuItem value="Otro">Otro</MenuItem>
       </TextField>
       <TextField
-        id="estado"
-        name="estado"
-        label="Estado"
-        select
-        value={formData.estado}
-        onChange={handleInputChange}
         fullWidth
+        id="estado"
+        label="Estado"
         margin="normal"
+        name="estado"
+        onChange={handleInputChange}
+        select
         sx={{ color: "#FFF" }}
+        value={formData.estado}
       >
         <MenuItem value="Abono">Abono</MenuItem>
         <MenuItem value="No Abono">No Abono</MenuItem>
       </TextField>
       <Button
-        variant="contained"
         color="primary"
-        onClick={handleAddOrEditEntry}
         fullWidth
+        onClick={handleAddOrEditEntry}
+        sx={{ fontWeight: "bold" }}
+        variant="contained"
       >
         {editIndex !== null ? "Guardar Cambios" : "Añadir"}
       </Button>

@@ -16,12 +16,6 @@ const AgapeHeader = () => (
       sx={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
     >
       Cuenta Ágape
-      <img
-        style={{ marginLeft: "5px" }}
-        alt="agapeLogo"
-        src={`${process.env.PUBLIC_URL}/agape.png`}
-        width="52"
-      />
     </Typography>
     <img
       style={{ marginLeft: "5px" }}
