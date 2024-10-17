@@ -55,7 +55,7 @@ const AgapeForm = ({
         onChange={handleInputChange}
         sx={{ color: "#FFF" }}
         type="number"
-        value={formData.importeMenu}
+        value={formData.importeMenu || ""}
       />
 
       <TextField
@@ -83,7 +83,7 @@ const AgapeForm = ({
         onChange={handleInputChange}
         sx={{ color: "#FFF" }}
         type="number"
-        value={formData.importeBebida}
+        value={formData.importeBebida || ""}
       />
 
       <TextField
@@ -106,7 +106,7 @@ const AgapeForm = ({
         onChange={handleInputChange}
         sx={{ color: "#FFF" }}
         type="number"
-        value={formData.importePostre}
+        value={formData.importePostre || ""}
       />
 
       <TextField

@@ -22,17 +22,17 @@ export interface Entrada {
   estado: string;
 }
 
-const defaultFormData = {
+const defaultFormData: Entrada = {
   nombre: "",
   menu: "",
-  importeMenu: 0,
+  importeMenu: 0, // Asegúrate que sea numérico
   bebida: "",
-  importeBebida: 0,
+  importeBebida: 0, // Asegúrate que sea numérico
   postre: "",
-  importePostre: 0,
+  importePostre: 0, // Asegúrate que sea numérico
   metodoPago: "",
-  total: 0,
   estado: "",
+  total: 0, // Asegúrate que sea numérico
 };
 
 const App = () => {
@@ -51,23 +51,12 @@ const App = () => {
   ) => {
     const { name, value } = e.target;
 
-    // Convertir el valor a número si es un campo de importe
-    const numericValue =
-      name.includes("importe") || name === "propina" ? Number(value) : value;
+    // Convertir los campos de importe a número
+    const newValue = name.includes("importe") ? Number(value) : value;
 
-    // Validar que los importes y la propina no sean negativos
-    if (
-      (name.includes("importe") || name === "propina") &&
-      typeof numericValue === "number" &&
-      numericValue < 0
-    ) {
-      return; // No actualizamos el estado si el valor es negativo
-    }
-
-    // Actualizar el estado del formulario
     setFormData((prev) => ({
       ...prev,
-      [name]: numericValue,
+      [name]: newValue,
     }));
   };
 
