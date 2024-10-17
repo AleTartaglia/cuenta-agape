@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, CssBaseline, Typography } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import localforage from "localforage";
